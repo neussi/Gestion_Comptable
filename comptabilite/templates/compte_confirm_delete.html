@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer le compte: {{ compte.nom }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0F172A;
+            color: #E2E8F0;
+        }
+        .sidebar {
+            background-color: #1E293B;
+        }
+        .card {
+            background-color: #1E293B;
+            color: #E2E8F0;
+        }
+        .btn-primary {
+            background-color: #F97316;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #EA580C;
+        }
+        .btn-secondary {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #2563EB;
+        }
+        .btn-danger {
+            background-color: #EF4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <div class="w-64 sidebar shadow-lg">
+            <div class="p-6 bg-orange-600 text-white flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Gestion Comptable</h1>
+            </div>
+            <nav class="p-4">
+                <ul>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-home mr-3"></i>Tableau de Bord
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'compte_list' %}" class="flex items-center p-2 bg-gray-700 text-white rounded transition">
+                            <i class="fas fa-book-open mr-3"></i>Comptes Comptables
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'ecriture_list' %}" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>Écritures Comptables
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-users mr-3"></i>Clients
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-truck mr-3"></i>Fournisseurs
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-file-invoice mr-3"></i>Facturation
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-chart-line mr-3"></i>Trésorerie
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-building mr-3"></i>Immobilisations
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-file-pdf mr-3"></i>Rapports Financiers
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-4 mt-auto">
+                <a href="/" class="btn-primary px-4 py-2 rounded w-full text-center block">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="mb-8">
+                <a href="{% url 'compte_list' %}" class="text-gray-400 hover:text-white mb-2 inline-block">
+                    <i class="fas fa-arrow-left mr-2"></i>Retour à la liste
+                </a>
+                <h1 class="text-3xl font-bold text-white">Confirmation de suppression</h1>
+            </div>
+
+            <!-- Confirmation card -->
+            <div class="card rounded-lg shadow-lg max-w-2xl mx-auto">
+                <div class="p-6">
+                    <div class="text-center">
+                        <div class="bg-red-900/30 text-red-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-exclamation-triangle text-2xl"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold mb-2">Êtes-vous sûr de vouloir supprimer ce compte?</h2>
+                        <p class="text-gray-400 mb-6">Cette action est irréversible et supprimera définitivement le compte <span class="font-semibold text-white">{{ compte.numero }} - {{ compte.nom }}</span>.</p>
+                        
+                        <div class="card bg-gray-800/50 p-4 mb-6 text-left">
+                            <h3 class="font-semibold mb-2 text-gray-300">Informations du compte:</h3>
+                            <div class="grid grid-cols-2 gap-y-1">
+                                <div class="text-gray-400">Numéro:</div>
+                                <div>{{ compte.numero }}</div>
+                                <div class="text-gray-400">Nom:</div>
+                                <div>{{ compte.nom }}</div>
+                                <div class="text-gray-400">Type:</div>
+                                <div>{{ compte.type }}</div>
+                                <div class="text-gray-400">Solde actuel:</div>
+                                <div>{{ compte.solde }}€</div>
+                            </div>
+                        </div>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="flex justify-center gap-4">
+                                <a href="{% url 'compte_detail' compte.id %}" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+                                    Annuler
+                                </a>
+                                <button type="submit" class="btn-danger px-6 py-2 rounded">
+                                    <i class="fas fa-trash mr-2"></i>Supprimer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

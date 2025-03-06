@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Comptable</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #0F172A;
+            color: #E2E8F0;
+        }
+        .sidebar {
+            background-color: #1E293B;
+        }
+        .card {
+            background-color: #1E293B;
+            color: #E2E8F0;
+        }
+        .btn-primary {
+            background-color: #F97316;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #EA580C;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <div class="w-64 sidebar shadow-lg">
+            <div class="p-6 bg-orange-600 text-white flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Gestion Comptable</h1>
+            </div>
+            <nav class="p-4">
+                <ul>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-home mr-3"></i>Tableau de Bord
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'compte_list' %}" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-book-open mr-3"></i>Comptes Comptables
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'ecriture_list' %}" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>Écritures Comptables
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-users mr-3"></i>Clients
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-gray-700 rounded transition">
+                            <i class="fas fa-truck mr-3"></i>Fournisseurs
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-blue-100 rounded transition">
+                            <i class="fas fa-file-invoice mr-3"></i>Facturation
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-blue-100 rounded transition">
+                            <i class="fas fa-chart-line mr-3"></i>Trésorerie
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-blue-100 rounded transition">
+                            <i class="fas fa-building mr-3"></i>Immobilisations
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="/" class="flex items-center p-2 hover:bg-blue-100 rounded transition">
+                            <i class="fas fa-file-pdf mr-3"></i>Rapports Financiers
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-4 mt-auto">
+                <a href="/" class="btn-primary px-4 py-2 rounded w-full text-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-white">Tableau de Bord</h1>
+                <div class="text-white">
+                    <i class="fas fa-user mr-2"></i>{{ user.username }}
+                </div>
+            </div>
+
+            <!-- Statistiques Générales -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Total Comptes</h3>
+                            <p class="text-3xl font-bold text-orange-500">
+                                {{ statistiques_generales.total_comptes }}
+                            </p>
+                        </div>
+                        <i class="fas fa-book-open text-4xl text-orange-400"></i>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Clients</h3>
+                            <p class="text-3xl font-bold text-green-500">
+                                {{ statistiques_generales.total_clients }}
+                            </p>
+                        </div>
+                        <i class="fas fa-users text-4xl text-green-400"></i>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2">Fournisseurs</h3>
+                            <p class="text-3xl font-bold text-blue-500">
+                                {{ statistiques_generales.total_fournisseurs }}
+                            </p>
+                        </div>
+                        <i class="fas fa-truck text-4xl text-blue-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Données Financières -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Chiffre d'Affaires</h3>
+                        <i class="fas fa-chart-line text-green-400"></i>
+                    </div>
+                    <p class="text-3xl font-bold text-green-500">
+                        {{ chiffre_affaires }}€
+                    </p>
+                </div>
+                <div class="card p-6 rounded-lg shadow-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Factures Impayées</h3>
+                        <i class="fas fa-file-invoice text-red-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-bold text-red-500">
+                            {{ factures.total_impayees }} Factures
+                        </p>
+                        <p class="text-lg text-red-300">
+                            {{ factures.montant_total_impaye }}€ restants
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dernières Activités -->
+            <div class="card mt-8 p-6 rounded-lg">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Dernières Écritures Comptables</h3>
+                    <i class="fas fa-list text-blue-400"></i>
+                </div>
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-700">
+                            <th class="py-2 text-left">Date</th>
+                            <th class="py-2 text-left">Débit</th>
+                            <th class="py-2 text-left">Crédit</th>
+                            <th class="py-2 text-right">Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for activite in dernieres_activites %}
+                        <tr class="border-b border-gray-700 hover:bg-gray-800">
+                            <td>{{ activite.date|date:"d/m/Y" }}</td>
+                            <td>{{ activite.debit.nom }}</td>
+                            <td>{{ activite.credit.nom }}</td>
+                            <td class="text-right">{{ activite.montant }}€</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div class="card p-6 rounded-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Flux de Trésorerie</h3>
+                        <i class="fas fa-money-bill-wave text-blue-400"></i>
+                    </div>
+                    <canvas id="cashFlowChart" height="150"></canvas>
+                </div>
+                <div class="card p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-semibold">Répartition des Comptes</h3>
+                        <i class="fas fa-pie-chart text-green-400"></i>
+                    </div>
+                    <canvas id="accountTypeChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Flux de Trésorerie Chart
+        var cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+        var cashFlowChart = new Chart(cashFlowCtx, {
+            type: 'bar',
+            data: {
+                labels: [{% for flux in flux_tresorerie %}'{{ flux.mois|date:"M Y" }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [
+                    {
+                        label: 'Entrées',
+                        data: [{% for flux in flux_tresorerie %}{{ flux.entrees|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Sorties',
+                        data: [{% for flux in flux_tresorerie %}{{ flux.sorties|default:0 }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#E2E8F0'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#E2E8F0'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#E2E8F0'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Répartition des Comptes Chart
+        var accountTypeCtx = document.getElementById('accountTypeChart').getContext('2d');
+        var accountTypeChart = new Chart(accountTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: [{% for compte in repartition_comptes %}'{{ compte.type }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for compte in repartition_comptes %}{{ compte.nombre }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: ['#3B82F6', '#10B981', '#6366F1', '#F97316']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#E2E8F0'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
