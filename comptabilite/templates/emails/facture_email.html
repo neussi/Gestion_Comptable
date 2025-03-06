@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture n°{{ facture.numero }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #F97316;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 0 0 5px 5px;
+            font-size: 12px;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .info-table th, .info-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .info-table th {
+            text-align: left;
+            width: 40%;
+            background-color: #f2f2f2;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #F97316;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .state {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .state-unpaid {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .state-partial {
+            background-color: #fff8e1;
+            color: #ff8f00;
+        }
+        .state-paid {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .highlight {
+            font-size: 24px;
+            font-weight: bold;
+            color: #F97316;
+        }
+        .note {
+            font-style: italic;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-left: 3px solid #F97316;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Facture n°{{ facture.numero }}</h1>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour {{ nom_destinataire }},</p>
+            
+            <p>Veuillez trouver ci-après les détails de votre facture :</p>
+            
+            <table class="info-table">
+                <tr>
+                    <th>Numéro de facture :</th>
+                    <td><strong>{{ facture.numero }}</strong></td>
+                </tr>
+                <tr>
+                    <th>Date d'émission :</th>
+                    <td>{{ facture.date_emission }}</td>
+                </tr>
+                <tr>
+                    <th>Date d'échéance :</th>
+                    <td>{{ facture.date_echeance }}</td>
+                </tr>
+                <tr>
+                    <th>État :</th>
+                    <td>
+                        {% if facture.etat == 'Non payé' %}
+                            <span class="state state-unpaid">{{ facture.etat }}</span>
+                        {% elif facture.etat == 'Partiellement payé' %}
+                            <span class="state state-partial">{{ facture.etat }}</span>
+                        {% else %}
+                            <span class="state state-paid">{{ facture.etat }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Montant total :</th>
+                    <td class="highlight">{{ facture.montant_total }}€</td>
+                </tr>
+            </table>
+
+            {% if facture.description %}
+            <div>
+                <h3>Description :</h3>
+                <p>{{ facture.description }}</p>
+            </div>
+            {% endif %}
+            
+            <div>
+                <h3>Modalités de paiement :</h3>
+                <p>Veuillez procéder au règlement de cette facture avant la date d'échéance indiquée.</p>
+                
+                <p>Modes de paiement acceptés :</p>
+                <ul>
+                    <li>Virement bancaire</li>
+                    <li>Chèque</li>
+                    <li>Carte bancaire</li>
+                </ul>
+            </div>
+            
+            <div class="note">
+                <p>Cette facture vous est envoyée automatiquement par notre système de gestion comptable. Merci de conserver ce document pour vos archives.</p>
+            </div>
+            
+            <p>Pour toute question concernant cette facture, n'hésitez pas à nous contacter.</p>
+            
+            <p>Cordialement,<br>
+            L'équipe de gestion comptable</p>
+        </div>
+        
+        <div class="footer">
+            <p>© {{ facture.date_emission.year }} Gestion Comptable - Tous droits réservés</p>
+            <p>Ce message et les documents joints sont confidentiels et établis à l'attention exclusive de leur destinataire.</p>
+        </div>
+    </div>
+</body>
+</html>
